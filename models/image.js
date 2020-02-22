@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 //* ======================================================================================
 
-const UserSchema = new Schema({
+const ImageSchema = new Schema({
   login: {
     type: String,
     required: true,
@@ -11,10 +11,12 @@ const UserSchema = new Schema({
   },
   id: {
     type: Number
-   
   },
   node_id: String,
-  avatar_url: String,
+  avatar_url: {
+    type: String,
+    required: true
+  },
   gravatar_id: String,
   url: String,
   html_url: String,
@@ -32,4 +34,4 @@ const UserSchema = new Schema({
 });
 
 //* ======================================================================================
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model('image', ImageSchema);

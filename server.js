@@ -1,21 +1,16 @@
-const fs = require('fs');
-const path = require('path');
 const express = require('express');
 const config = require('config');
 const connectDB = require('./config/db');
-const User = require('./models/user');
+const Image = require('./models/image');
 const PORT = config.get('PORT');
 
-const app = express();
-//*======================================================================================
+//*================================Connect to Database=====================================
 
-// Connect Database
 connectDB();
 
-//*======================================================================================
+//*==================== Make request to get and store data from Github Api =================
 
 const activateGettingNewImages = process.argv[2];
-
 if (activateGettingNewImages === 'activate') {
   const https = require('https');
   const options = {
@@ -35,11 +30,10 @@ if (activateGettingNewImages === 'activate') {
     });
     res.on('end', function() {
       let data = JSON.parse(str);
-      console.log(data);
       data.forEach(async element => {
-        let user = new User(element);
+        let image = new Image(element);
         try {
-          await user.save();
+          await image.save();
         } catch (error) {
           console.log('unable to save images');
         }
@@ -53,28 +47,18 @@ if (activateGettingNewImages === 'activate') {
   req.end();
 }
 
+//*======================================================================================
+
+const app = express();
 
 //*======================================================================================
+
 app.use(express.json());
 
+//*======================================R outes ========================================
 
-//*======================================================================================
+app.use('/home', require('./routes/images'));
 
-// Routes
-app.use('/home', require('./routes/users'));
+//*================================= Start listening on configured PORT==================
 
-//*======================================================================================
-
-// // Serve static assets in production
-// if (process.env.NODE_ENV == 'production') {
-//   // Set static folder
-//   app.use(express.static('client/build'));
-
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-//   });
-// }
-
-//*======================================================================================
-
-app.listen(PORT, () => console.log(`Server Started on Port ${PORT}`));
+app.listen(PORT, () => console.log(`Server Started on Port ${PORT}`)); 

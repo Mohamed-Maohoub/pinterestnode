@@ -1,4 +1,4 @@
 {
   "mongoURI": "mongodb://localhost:27017/pinterest",
-  "PORT":5001
+  "PORT": 5001
 }

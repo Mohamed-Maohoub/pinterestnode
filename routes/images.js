@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const Image = require('../models/image');
-
+const {
+  DEFAULT_LIMIT,
+  MAX_LIMIT,
+  DEFAULT_SKIP
+} = require('../config/Constants');
 //* ======================================================================================
 
 // @route     GET /
@@ -11,16 +15,16 @@ const Image = require('../models/image');
 
 router.get('/', async (req, res) => {
   let { term, limit, skip } = req.query;
-  
+
   let login = term ? { login: term } : {};
-  skip = skip ? parseInt(skip) : 0;
-  limit = limit ? parseInt(limit) : 12;
-  // check if it doesn't exceed max value
-  if (limit > 15) {
-    limit = 15;
+  skip = skip ? parseInt(skip) : DEFAULT_SKIP;
+  limit = limit ? parseInt(limit) : DEFAULT_LIMIT;
+  //! check if it doesn't exceed max value
+  if (limit > MAX_LIMIT) {
+    limit = MAX_LIMIT;
   }
   try {
-    const data = await Image.find(login, 'login   avatar_url', {
+    const data = await Image.find(login, 'login   _id avatar_url', {
       limit,
       skip
     });
